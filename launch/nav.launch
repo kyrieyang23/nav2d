@@ -1,0 +1,64 @@
+<launch>
+	<master auto="start"/>
+
+	<param name ="use_sim_time" value="false"/>
+
+<!--- Start laser scan --> 
+
+	<node pkg="urg_node" type="urg_node" name="urg_node" output="screen" respawn="true">
+    <!-- <remap from="scan" to="scan_front"/> -->
+    <param name="ip_address"         type="string" value="192.168.0.10"/>
+
+    <param name="ip_port"            type="int" value="10940"/>
+
+    <param name="frame_id"           type="string" value="laser"/>
+    <param name="calibrate_time"        type="bool" value="true"/>
+    <param name="time_offset"             type="double" value="0"/>
+
+    <param name="publish_intensity"     type="bool"   value="false"/>
+    <param name="publish_multiecho"     type="bool"   value="false"/>
+
+    <param name="angle_min"    type="double"   value="-2.1"/>
+    <param name="angle_max"    type="double"   value="2.1"/>
+
+    <param name="cluster"    type="int"   value="1"/>
+    <param name="skip"    type="int"   value="0"/>
+    <param name="diagnostics_tolerance"    type="double"   value="0.5"/>
+    <param name="diagnostics_window_time"    type="double"   value="5"/>
+
+    </node>
+
+
+<!--- Start arduino serial interface --> 
+
+	<!-- <node pkg="rosserial_arduino" type="serial_node.py" name="rosserial" respawn="true"  args="_port:=/dev/ttyACM0"/> -->
+
+<!--- Setup tramformation --> 
+	<node pkg="tf" type="static_transform_publisher" name="base_2_laser" args="0.482 0 0.084 0 0 0  base_link laser_frame 100" />
+
+<!--- Run odometry setup node --> 
+
+	<node pkg="moblie_robot" type="odom" name="odom"   output="screen"/>
+
+<!--- Run the map server --> 
+
+	<node  pkg="map_server" type="map_server" name="map_server"  args="/home/parallels/map.yaml"/>
+
+<!--- Run AMCL --> 
+<include file="$(find amcl)/examples/amcl_diff.launch"/>
+
+<!--- Run move base --> 
+
+	<node pkg="move_base" type="move_base" name="move_base" respawn="true"  output="screen">
+	<rosparam file="/home/parallels/catkin_ws/src/nav2d/costmap_common_params.yaml" command="load" ns="global_costmap" /> 
+        <rosparam file="/home/parallels/catkin_ws/src/nav2d/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="/home/parallels/catkin_ws/src/nav2d/local_costmap_params.yaml" command="load" /> 
+	<rosparam file="/home/parallels/catkin_ws/src/nav2d/global_costmap_params.yaml" command="load" />
+	<rosparam file="/home/parallels/catkin_ws/src/nav2d/move_base_params.yaml" command="load" />
+	<rosparam file="/home/parallels/catkin_ws/src/nav2d/teb_local_planner_params.yaml" command="load" /> 
+	</node>
+
+
+</launch> 
+
+
