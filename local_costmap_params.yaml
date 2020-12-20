@@ -45,7 +45,7 @@ local_costmap:
     sensor_obstacle:
         # Observation_sources <--> define a list of sensors going to pass infomation to costmap
         observation_sources: laser_scan_sensor
-        laser_scan_sensor: {sensor_frame: laser_frame, data_type: LaserScan, topic: scan, marking: true, clearing: true}
+        laser_scan_sensor: {sensor_frame: laser, data_type: LaserScan, topic: scan, marking: true, clearing: true}
     inflation:
         inflation_radius: 0.1
         cost_scaling_factor: 0.0

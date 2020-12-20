@@ -1,3 +1,5 @@
+<?xml version="1.0"?>
+
 <launch>
 	<master auto="start"/>
 
@@ -28,17 +30,12 @@
 
     </node>
 
-
-<!--- Start arduino serial interface --> 
-
-	<!-- <node pkg="rosserial_arduino" type="serial_node.py" name="rosserial" respawn="true"  args="_port:=/dev/ttyACM0"/> -->
-
 <!--- Setup tramformation --> 
-	<node pkg="tf" type="static_transform_publisher" name="base_2_laser" args="0.482 0 0.084 0 0 0  base_link laser_frame 100" />
+	<node pkg="tf" type="static_transform_publisher" name="base_2_laser" args="0.482 0 0.084 0 0 0  base_link laser 100" />
 
 <!--- Run odometry setup node --> 
 
-	<node pkg="moblie_robot" type="odom" name="odom"   output="screen"/>
+	<node pkg="mobile_robot" type="odom" name="odom"   output="screen"/>
 
 <!--- Run the map server --> 
 
